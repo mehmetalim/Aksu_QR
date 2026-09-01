@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title> Aksu Çınaraltı | QR Menü</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#241a14;
+    --bg2:#2f231b;
+    --paper:#f4ead9;
+    --paper2:#eee0c8;
+    --ink:#2a1f16;
+    --ink-soft:#5b4a3a;
+    --copper:#b8703f;
+    --ember:#9c3b22;
+    --olive:#6f7d4e;
+    --wheat:#b9871f;
+    --cream:#f1e6d8;
+    --line:rgba(42,31,22,0.25);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--cream);font-family:'Work Sans',sans-serif;}
+  .shell{max-width:520px;margin:0 auto;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;}
+
+  /* HEADER */
+  header{padding:36px 24px 22px;text-align:center;border-bottom:1px solid rgba(241,230,216,0.08);}
+  header .brand{font-family:'Zilla Slab',serif;font-weight:700;font-size:2.1rem;letter-spacing:0.5px;color:var(--cream);}
+  header .brand em{font-style:normal;color:var(--copper);}
+  header .tag{margin-top:6px;font-size:0.85rem;color:rgba(241,230,216,0.55);letter-spacing:0.3px;}
+
+  /* CATEGORY NAV */
+  nav.cats{display:flex;gap:8px;padding:16px 16px 6px;overflow-x:auto;}
+  nav.cats button{
+    flex:0 0 auto;padding:10px 16px;border-radius:999px;border:1px solid rgba(241,230,216,0.18);
+    background:transparent;color:var(--cream);font-family:'Work Sans',sans-serif;font-size:0.88rem;font-weight:500;
+    display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .2s ease;white-space:nowrap;
+  }
+  nav.cats button.active{background:var(--copper);border-color:var(--copper);color:#fff;}
+  nav.cats button .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6;}
+
+  /* MENU PAPER PANEL */
+  main{padding:14px 16px 40px;flex:1;}
+  .paper{background:linear-gradient(180deg,var(--paper),var(--paper2));border-radius:14px;padding:0 0 8px;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,0.35);overflow:hidden;}
+  .banner{width:100%;height:108px;display:block;}
+  .cat-title{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;padding:18px 20px 0;}
+  .cat-title h2{font-family:'Zilla Slab',serif;font-size:1.3rem;margin:0;font-weight:600;}
+  .cat-title span.sub{font-size:0.75rem;color:var(--ink-soft);}
+  .cat-rule{height:2px;width:46px;border-radius:2px;margin:2px 20px 14px;}
+  .item-list{padding:0 20px;}
+  .item{padding:14px 0;border-bottom:1px dashed var(--line);display:flex;gap:12px;}
+  .item:last-child{border-bottom:none;}
+  .item-thumb{flex:0 0 auto;width:58px;height:58px;border-radius:10px;overflow:hidden;background:rgba(42,31,22,0.08);display:flex;align-items:center;justify-content:center;}
+  .item-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .item-thumb svg{width:60%;height:60%;opacity:0.55;}
+  .item-body{flex:1;min-width:0;}
+  .item-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .item-name{font-family:'Zilla Slab',serif;font-weight:600;font-size:1.0rem;}
+  .item-weight{font-size:0.7rem;color:var(--ink-soft);font-weight:400;margin-left:6px;}
+  .leader{flex:1;border-bottom:1px dotted var(--ink-soft);opacity:.5;margin:0 6px;transform:translateY(-3px);}
+  .item-price{font-family:'Zilla Slab',serif;font-weight:700;font-size:1.0rem;white-space:nowrap;}
+  .item-desc{font-size:0.8rem;color:var(--ink-soft);margin-top:3px;font-style:italic;}
+  .sold-out{opacity:0.45;}
+  .sold-out .item-price::after{content:" (tükendi)";font-size:0.65rem;font-style:italic;font-weight:400;}
+
+  .empty{text-align:center;padding:30px 10px;color:var(--ink-soft);font-size:0.9rem;}
+
+  /* FOOTER LINK TO ADMIN */
+  .admin-link{text-align:center;padding:18px 0 6px;}
+  .admin-link button{background:none;border:none;color:rgba(241,230,216,0.35);font-size:0.75rem;cursor:pointer;letter-spacing:0.3px;}
+
+  /* ADMIN VIEW */
+  .admin-wrap{padding:28px 18px 60px;}
+  .admin-wrap h2{font-family:'Zilla Slab',serif;margin:0 0 4px;}
+  .admin-wrap .muted{color:rgba(241,230,216,0.5);font-size:0.82rem;margin-bottom:20px;}
+  .pin-box{max-width:280px;margin:60px auto;text-align:center;}
+  .pin-box input{width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(241,230,216,0.25);background:var(--bg2);color:var(--cream);font-size:1.1rem;text-align:center;letter-spacing:4px;}
+  .pin-box button{margin-top:14px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--copper);color:#fff;font-weight:600;cursor:pointer;}
+  .pin-err{color:var(--ember);font-size:0.8rem;margin-top:8px;min-height:16px;}
+
+  .admin-cat-block{background:var(--bg2);border-radius:12px;padding:16px;margin-bottom:18px;}
+  .admin-cat-block h3{font-family:'Zilla Slab',serif;margin:0 0 12px;font-size:1.05rem;}
+  .admin-item{display:grid;grid-template-columns:1fr;gap:6px;padding:12px;background:rgba(241,230,216,0.04);border-radius:8px;margin-bottom:10px;}
+  .admin-item .row2{display:flex;gap:6px;}
+  .admin-item input, .admin-item textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid rgba(241,230,216,0.18);background:var(--bg);color:var(--cream);font-family:'Work Sans',sans-serif;font-size:0.85rem;}
+  .admin-item textarea{resize:vertical;min-height:32px;}
+  .admin-item .row-actions{display:flex;justify-content:space-between;align-items:center;margin-top:4px;}
+  .admin-item label{font-size:0.78rem;color:rgba(241,230,216,0.6);display:flex;align-items:center;gap:6px;}
+  .del-btn{background:none;border:none;color:var(--ember);font-size:0.78rem;cursor:pointer;}
+  .add-btn{width:100%;padding:10px;border-radius:8px;border:1px dashed rgba(241,230,216,0.3);background:none;color:var(--cream);cursor:pointer;font-size:0.85rem;}
+  .save-bar{position:sticky;bottom:0;background:var(--bg);padding:14px 0;display:flex;gap:10px;border-top:1px solid rgba(241,230,216,0.08);margin-top:10px;}
+  .save-bar button{flex:1;padding:13px;border-radius:8px;border:none;font-weight:600;cursor:pointer;font-size:0.9rem;}
+  .save-primary{background:var(--copper);color:#fff;}
+  .save-secondary{background:none;border:1px solid rgba(241,230,216,0.25)!important;color:var(--cream);}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--olive);color:#fff;padding:10px 18px;border-radius:8px;font-size:0.85rem;opacity:0;transition:opacity .3s;pointer-events:none;}
+  .toast.show{opacity:1;}
+  .qr-block{text-align:center;background:var(--bg2);border-radius:12px;padding:20px;margin-top:20px;}
+  .qr-block img{background:#fff;padding:10px;border-radius:8px;}
+  .qr-block p{font-size:0.78rem;color:rgba(241,230,216,0.55);margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header>
+    <div class="brand"> Aksu Çınar<em>altı</em></div>
+    <div class="tag">Kahvaltı · Kebap & Izgara · Fırından Pide-Lahmacun</div>
+  </header>
+
+  <div id="menuView">
+    <nav class="cats" id="catNav"></nav>
+    <main><div class="paper" id="menuList"></div></main>
+    <div class="admin-link"><button onclick="showAdmin()">Yönetim Paneli</button></div>
+  </div>
+
+  <div id="adminView" style="display:none;">
+    <div class="admin-wrap">
+
+      <div class="pin-box" id="pinBox">
+        <h2>Yönetim Girişi</h2>
+        <p class="muted">Fiyat ve menü içeriğini güncellemek için PIN girin.</p>
+        <input type="password" id="pinInput" inputmode="numeric" maxlength="4" placeholder="••••">
+        <button onclick="checkPin()">Giriş Yap</button>
+        <div class="pin-err" id="pinErr"></div>
+        <div class="admin-link"><button onclick="showMenu()">← Menüye dön</button></div>
+      </div>
+
+      <div id="adminPanel" style="display:none;">
+        <h2>Menü Yönetimi</h2>
+        <p class="muted">Fiyatları düzenleyin, ürün ekleyin/kaldırın. Değişiklikler kaydettiğinizde tüm müşterilerin gördüğü menüde anında güncellenir.<br><br>
+        <strong style="color:var(--cream);">Ürün fotoğrafı eklemek için:</strong> PostImages, Imgur veya herhangi bir resim yükleme sitesinden aldığınız doğrudan bağlantıyı (.jpg/.png) "Görsel URL" alanına yapıştırın. Link boş bırakılırsa şık bir kategori ikonu otomatik gösterilir.</p>
+        <div id="adminCats"></div>
+        <div class="save-bar">
+          <button class="save-secondary" onclick="showMenu()">Menüye Dön</button>
+          <button class="save-primary" onclick="saveMenu()">Kaydet</button>
+        </div>
+
+        <div class="qr-block">
+          <h3 style="font-family:'Zilla Slab',serif;margin-top:0;">QR Kod</h3>
+          <img id="qrImg" width="180" height="180" alt="QR kod">
+          <p>Bu QR kodu masalara / kapıya yazdırın. Okutulduğunda müşteri doğrudan bu menüyü görür.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const STORAGE_KEY = 'cinaralti-menu-data';
+const ADMIN_PIN = '1234';
+
+const defaultData = {
+  categories: [
+    {id:'kahvalti', name:'Kahvaltı', icon:'☕', accent:'olive'},
+    {id:'kebap', name:'Kebap & Et Ürünleri', icon:'🔥', accent:'ember'},
+    {id:'firin', name:'Fırın Ürünleri', icon:'🫓', accent:'wheat'}
+  ],
+  items: [
+    // KAHVALTI
+    {id:'k1', cat:'kahvalti', name:'Serpme Kahvaltı', weight:'Kişi Başı', price:320, desc:'Peynir çeşitleri, zeytin, bal-kaymak, reçel, tereyağ, domates-salatalık, sucuk, pastırma, simit ve ekmek çeşitleri', active:true, image:'https://i.postimg.cc/tZ3GmmwP/serpme-kahv.jpg'},
+    {id:'k2', cat:'kahvalti', name:'Sade Kahvaltı', weight:'Kişi Başı', price:180, desc:'Peynir, zeytin, reçel, tereyağ, domates-salatalık, ekmek', active:true, image:'https://i.postimg.cc/G8FnSSV8/sade-kahv.jpg'},
+    {id:'k3', cat:'kahvalti', name:'Menemen', weight:'Tava', price:190, desc:'', active:true, image: 'https://i.postimg.cc/hXcs9Z1j/menemen.jpg'},
+    {id:'k4', cat:'kahvalti', name:'Sucuklu Yumurta', weight:'Tava', price:200, desc:'', active:true, image: 'https://i.postimg.cc/jDcXv6Mq/sucuklu-yumurta.webp'},
+    {id:'k5', cat:'kahvalti', name:'Kaşarlı Yumurta', weight:'Tava', price:180, desc:'', active:true, image: 'https://i.postimg.cc/68tcdbfq/kasarli-yumurta.jpg'},
+    {id:'k6', cat:'kahvalti', name:'Pastırmalı Yumurta', weight:'Tava', price:210, desc:'', active:true, image: 'https://i.postimg.cc/xX5RgG6Q/pastirmali-yumurta.jpg'},
+    {id:'k7', cat:'kahvalti', name:'Kaymaklı Bal Tabağı', weight:'', price:150, desc:'', active:true, image: 'https://i.postimg.cc/ZW4Hrsx0/kaymakli-bal.jpg'},
+    {id:'k8', cat:'kahvalti', name:'Simit', weight:'Adet', price:40, desc:'', active:true, image: 'https://i.postimg.cc/Hrz2306p/simit.jpg'},
+    {id:'k9', cat:'kahvalti', name:'Çay', weight:'Bardak', price:20, desc:'', active:true, image: 'https://i.postimg.cc/jDtcz34j/cay.jpg'},
+    {id:'k10', cat:'kahvalti', name:'Türk Kahvesi', weight:'Fincan', price:60, desc:'', active:true, image: 'https://i.postimg.cc/68c0zVMW/t-kahvesi.jpg'},
+
+    // FIRIN
+    {id:'f1', cat:'firin', name:'Lahmacun', weight:'Adet', price:70, desc:'', active:true},
+    {id:'f2', cat:'firin', name:'Kıymalı Pide', weight:'', price:210, desc:'', active:true},
+    {id:'f3', cat:'firin', name:'Kaşarlı Pide', weight:'', price:200, desc:'', active:true},
+    {id:'f4', cat:'firin', name:'Kuşbaşılı Pide', weight:'', price:240, desc:'', active:true},
+    {id:'f5', cat:'firin', name:'Karışık Pide', weight:'Kıymalı-Kaşarlı', price:230, desc:'', active:true},
+    {id:'f6', cat:'firin', name:'Sucuklu Kaşarlı Pide', weight:'', price:230, desc:'', active:true},
+    {id:'f7', cat:'firin', name:'Yumurtalı Kaşarlı Pide', weight:'', price:210, desc:'', active:true},
+    {id:'f8', cat:'firin', name:'Ispanaklı Pide', weight:'Vejetaryen', price:190, desc:'', active:true},
+
+    // KEBAP
+    {id:'e1', cat:'kebap', name:'Karışık Kebap (Tavuklu)', weight:'250 gr', price:675, desc:'', active:true},
+    {id:'e2', cat:'kebap', name:'Karışık Kebap (Tavuksuz)', weight:'250 gr', price:725, desc:'', active:true},
+    {id:'e3', cat:'kebap', name:'Patlıcanlı Kebap', weight:'180 gr', price:380, desc:'', active:true},
+    {id:'e4', cat:'kebap', name:'Domatesli Kebap', weight:'2 Şiş / 180 gr', price:380, desc:'', active:true},
+    {id:'e5', cat:'kebap', name:'Fıstıklı Kebap', weight:'160 gr', price:380, desc:'', active:true},
+    {id:'e6', cat:'kebap', name:'Köfte', weight:'160 gr', price:350, desc:'', active:true},
+    {id:'e7', cat:'kebap', name:'Ciğer', weight:'160 gr', price:400, desc:'', active:true},
+    {id:'e8', cat:'kebap', name:'Satır Adana', weight:'180 gr', price:350, desc:'', active:true},
+    {id:'e9', cat:'kebap', name:'Satır Urfa', weight:'180 gr', price:350, desc:'', active:true},
+    {id:'e10', cat:'kebap', name:'Simit Kebabı', weight:'180 gr', price:400, desc:'', active:true},
+    {id:'e11', cat:'kebap', name:'Haşhaş Kebabı', weight:'180 gr', price:400, desc:'', active:true},
+    {id:'e12', cat:'kebap', name:'Yoğurtlu Kebap', weight:'180 gr', price:350, desc:'', active:true},
+    {id:'e13', cat:'kebap', name:'Beyti Sarma', weight:'160 gr', price:380, desc:'', active:true},
+    {id:'e14', cat:'kebap', name:'Fırın Beyti', weight:'160 gr · Kaşarlı', price:420, desc:'', active:true},
+    {id:'e15', cat:'kebap', name:'Çıtır Beyti', weight:'160 gr · Kaşarlı-Sucuklu', price:420, desc:'', active:true},
+    {id:'e16', cat:'kebap', name:'Antep Usulü Kebap', weight:'160 gr · Altı Ezmeli', price:420, desc:'', active:true},
+    {id:'e17', cat:'kebap', name:'Alinazik', weight:'180 gr', price:420, desc:'', active:true},
+    {id:'e18', cat:'kebap', name:'Abagannuş', weight:'180 gr', price:450, desc:'', active:true},
+    {id:'e19', cat:'kebap', name:'Et Şiş', weight:'170 gr', price:400, desc:'', active:true},
+    {id:'e20', cat:'kebap', name:'Çöp Şiş', weight:'170 gr', price:380, desc:'', active:true},
+    {id:'e21', cat:'kebap', name:'Kuyruklu Çöp Şiş', weight:'170 gr · Pazarbaşı', price:400, desc:'', active:true},
+    {id:'e22', cat:'kebap', name:'Kuzu Pirzola', weight:'250 gr', price:600, desc:'', active:true},
+    {id:'e23', cat:'kebap', name:'Kuzu Lokum', weight:'180 gr', price:600, desc:'', active:true},
+    {id:'e24', cat:'kebap', name:'Dana Lokum', weight:'180 gr', price:600, desc:'', active:true},
+    {id:'e25', cat:'kebap', name:'Küsleme', weight:'180 gr', price:600, desc:'', active:true},
+    {id:'e26', cat:'kebap', name:'Çınaraltı Spesiyal', weight:'200 gr', price:300, desc:'Karışık kebap değildir', active:true},
+    {id:'e27', cat:'kebap', name:'Tavuk Şiş (Göğüsten)', weight:'200 gr', price:320, desc:'', active:true},
+    {id:'e28', cat:'kebap', name:'Tavuk Şiş (Buttan)', weight:'200 gr', price:320, desc:'', active:true},
+    {id:'e29', cat:'kebap', name:'Tavuk Pirzola', weight:'200 gr', price:320, desc:'', active:true},
+    {id:'e30', cat:'kebap', name:'Tavuk Kanat', weight:'200 gr', price:350, desc:'', active:true},
+    {id:'e31', cat:'kebap', name:'Çıtır Kanat', weight:'200 gr', price:350, desc:'', active:true}
+  ]
+};
+
+let data = null;
+let activeCat = 'kahvalti';
+
+async function loadData(){
+  try{
+    if(window.storage && window.storage.get){
+      const res = await window.storage.get(STORAGE_KEY, true);
+      data = JSON.parse(res.value);
+    } else {
+      const local = localStorage.getItem(STORAGE_KEY);
+      data = local ? JSON.parse(local) : JSON.parse(JSON.stringify(defaultData));
+    }
+  }catch(e){
+    data = JSON.parse(JSON.stringify(defaultData));
+  }
+  renderCatNav();
+  renderMenu();
+}
+
+function accentVar(a){
+  return {olive:'var(--olive)', ember:'var(--ember)', wheat:'var(--wheat)', copper:'var(--copper)'}[a] || 'var(--copper)';
+}
+
+const banners = {
+  kahvalti: `<svg class="banner" viewBox="0 0 520 108" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="520" height="108" fill="#7c8a5c"/>
+    <circle cx="70" cy="54" r="34" fill="#eee0c8"/><circle cx="70" cy="54" r="24" fill="#c79a2b"/>
+    <circle cx="150" cy="30" r="16" fill="#eee0c8"/><circle cx="150" cy="30" r="10" fill="#9c3b22"/>
+    <rect x="205" y="20" width="60" height="68" rx="8" fill="#eee0c8"/><rect x="215" y="30" width="40" height="10" rx="3" fill="#b8703f"/><rect x="215" y="46" width="40" height="10" rx="3" fill="#9c3b22"/><rect x="215" y="62" width="40" height="10" rx="3" fill="#c79a2b"/>
+    <ellipse cx="330" cy="60" rx="30" ry="18" fill="#eee0c8"/><circle cx="322" cy="55" r="6" fill="#f4ead9"/><circle cx="338" cy="55" r="6" fill="#c79a2b"/>
+    <rect x="392" y="18" width="14" height="46" rx="6" fill="#eee0c8"/><path d="M392 18 Q399 6 406 18" stroke="#eee0c8" stroke-width="4" fill="none"/>
+    <circle cx="460" cy="50" r="26" fill="#eee0c8"/><circle cx="460" cy="50" r="16" fill="#b8703f"/>
+  </svg>`,
+  kebap: `<svg class="banner" viewBox="0 0 520 108" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="520" height="108" fill="#5a2417"/>
+    <rect x="0" y="80" width="520" height="28" fill="#9c3b22"/>
+    <g stroke="#f1e6d8" stroke-width="4" stroke-linecap="round">
+      <line x1="120" y1="20" x2="150" y2="90"/><line x1="200" y1="20" x2="230" y2="90"/><line x1="280" y1="20" x2="310" y2="90"/><line x1="360" y1="20" x2="390" y2="90"/>
+    </g>
+    <g fill="#c79a2b">
+      <rect x="112" y="32" width="18" height="14" rx="4"/><rect x="132" y="50" width="18" height="14" rx="4"/><rect x="108" y="66" width="18" height="14" rx="4"/>
+      <rect x="192" y="30" width="18" height="14" rx="4"/><rect x="212" y="48" width="18" height="14" rx="4"/><rect x="188" y="64" width="18" height="14" rx="4"/>
+      <rect x="272" y="34" width="18" height="14" rx="4"/><rect x="292" y="52" width="18" height="14" rx="4"/><rect x="268" y="68" width="18" height="14" rx="4"/>
+      <rect x="352" y="32" width="18" height="14" rx="4"/><rect x="372" y="50" width="18" height="14" rx="4"/><rect x="348" y="66" width="18" height="14" rx="4"/>
+    </g>
+    <g fill="#e08a3c" opacity="0.85"><path d="M60 95 q6 -14 0 -24 q10 8 8 22 q-4 6 -8 2z"/><path d="M440 95 q6 -14 0 -24 q10 8 8 22 q-4 6 -8 2z"/></g>
+  </svg>`,
+  firin: `<svg class="banner" viewBox="0 0 520 108" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="520" height="108" fill="#7a5c22"/>
+    <path d="M60 108 V60 a70 70 0 0 1 140 0 V108 Z" fill="#3a2a1c"/>
+    <path d="M75 108 V64 a55 55 0 0 1 110 0 V108 Z" fill="#c9642a"/>
+    <ellipse cx="130" cy="60" rx="38" ry="12" fill="#e8a23f"/>
+    <ellipse cx="330" cy="60" rx="80" ry="26" fill="#e8c07a"/>
+    <circle cx="300" cy="55" r="4" fill="#7a3b1a"/><circle cx="320" cy="66" r="4" fill="#7a3b1a"/><circle cx="345" cy="52" r="4" fill="#7a3b1a"/><circle cx="360" cy="64" r="4" fill="#7a3b1a"/>
+    <rect x="440" y="30" width="50" height="60" rx="6" fill="#e8c07a"/>
+    <circle cx="450" cy="42" r="3" fill="#7a3b1a"/><circle cx="465" cy="50" r="3" fill="#7a3b1a"/><circle cx="478" cy="40" r="3" fill="#7a3b1a"/><circle cx="455" cy="65" r="3" fill="#7a3b1a"/><circle cx="472" cy="70" r="3" fill="#7a3b1a"/>
+  </svg>`
+};
+
+const fallbackIcons = {
+  kahvalti: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v8a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V8"/><path d="M8 3v3M12 3v3M16 3v3"/></svg>`,
+  kebap: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><line x1="6" y1="2" x2="18" y2="22"/><rect x="4" y="6" width="5" height="4" rx="1"/><rect x="10" y="10" width="5" height="4" rx="1"/><rect x="15" y="15" width="5" height="4" rx="1"/></svg>`,
+  firin: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><ellipse cx="12" cy="14" rx="9" ry="5"/><circle cx="9" cy="12" r=".8" fill="#5b4a3a"/><circle cx="13" cy="15" r=".8" fill="#5b4a3a"/><circle cx="16" cy="11" r=".8" fill="#5b4a3a"/></svg>`
+};
+
+function renderCatNav(){
+  const nav = document.getElementById('catNav');
+  nav.innerHTML = '';
+  data.categories.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = c.id===activeCat ? 'active' : '';
+    btn.innerHTML = `<span>${c.icon}</span> ${c.name}`;
+    btn.onclick = ()=>{ activeCat=c.id; renderCatNav(); renderMenu(); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderMenu(){
+  const wrap = document.getElementById('menuList');
+  const cat = data.categories.find(c=>c.id===activeCat);
+  const items = data.items.filter(i=>i.cat===activeCat);
+  let html = banners[cat.id] || '';
+  html += `<div class="cat-title"><h2>${cat.icon} ${cat.name}</h2><span class="sub">${items.length} çeşit</span></div>
+              <div class="cat-rule" style="background:${accentVar(cat.accent)}"></div>`;
+  if(items.length===0){
+    html += `<div class="empty">Bu kategoriye henüz ürün eklenmedi.</div>`;
+  } else {
+    html += `<div class="item-list">`;
+    items.forEach(i=>{
+      const thumb = i.image
+        ? `<img src="${escapeAttr(i.image)}" alt="${escapeAttr(i.name)}" loading="lazy" onerror="this.parentElement.innerHTML=fallbackIcons['${cat.id}']">`
+        : (fallbackIcons[cat.id] || '');
+      html += `<div class="item ${i.active===false?'sold-out':''}">
+        <div class="item-thumb">${thumb}</div>
+        <div class="item-body">
+          <div class="item-row">
+            <span class="item-name">${i.name}${i.weight? `<span class="item-weight">(${i.weight})</span>`:''}</span>
+            <span class="leader"></span>
+            <span class="item-price">${Number(i.price).toLocaleString('tr-TR')} TL</span>
+          </div>
+          ${i.desc? `<div class="item-desc">${i.desc}</div>`:''}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+function showAdmin(){
+  document.getElementById('menuView').style.display='none';
+  document.getElementById('adminView').style.display='block';
+}
+function showMenu(){
+  document.getElementById('adminView').style.display='none';
+  document.getElementById('menuView').style.display='block';
+  document.getElementById('pinBox').style.display='block';
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('pinInput').value='';
+  document.getElementById('pinErr').textContent='';
+  activeCat = data.categories[0].id;
+  renderCatNav(); renderMenu();
+}
+
+function checkPin(){
+  const val = document.getElementById('pinInput').value;
+  if(val === ADMIN_PIN){
+    document.getElementById('pinBox').style.display='none';
+    document.getElementById('adminPanel').style.display='block';
+    renderAdmin();
+    renderQr();
+  } else {
+    document.getElementById('pinErr').textContent = 'Hatalı PIN. Tekrar deneyin.';
+  }
+}
+
+function renderQr(){
+  const url = window.location.href;
+  document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(url);
+}
+
+function renderAdmin(){
+  const wrap = document.getElementById('adminCats');
+  wrap.innerHTML = '';
+  data.categories.forEach(cat=>{
+    const block = document.createElement('div');
+    block.className = 'admin-cat-block';
+    let inner = `<h3>${cat.icon} ${cat.name}</h3>`;
+    const items = data.items.filter(i=>i.cat===cat.id);
+    items.forEach(item=>{
+      inner += `<div class="admin-item" data-id="${item.id}">
+        <div class="row2" style="align-items:center;">
+          <div class="item-thumb" style="flex:0 0 auto;">${item.image?`<img src="${escapeAttr(item.image)}" onerror="this.parentElement.innerHTML=fallbackIcons['${cat.id}']">`:(fallbackIcons[cat.id]||'')}</div>
+          <input type="text" value="${escapeAttr(item.image||'')}" placeholder="Görsel URL (opsiyonel)" oninput="updateItem('${item.id}','image',this.value)">
+        </div>
+        <input type="text" value="${escapeAttr(item.name)}" placeholder="Ürün adı" oninput="updateItem('${item.id}','name',this.value)">
+        <div class="row2">
+          <input type="text" value="${escapeAttr(item.weight||'')}" placeholder="Gramaj / not" oninput="updateItem('${item.id}','weight',this.value)">
+          <input type="number" value="${item.price}" placeholder="Fiyat (TL)" oninput="updateItem('${item.id}','price',this.value)">
+        </div>
+        <textarea placeholder="Açıklama (opsiyonel)" oninput="updateItem('${item.id}','desc',this.value)">${item.desc||''}</textarea>
+        <div class="row-actions">
+          <label><input type="checkbox" ${item.active!==false?'checked':''} onchange="updateItem('${item.id}','active',this.checked)"> Menüde göster</label>
+          <button class="del-btn" onclick="deleteItem('${item.id}')">Ürünü Sil</button>
+        </div>
+      </div>`;
+    });
+    inner += `<button class="add-btn" onclick="addItem('${cat.id}')">+ ${cat.name} kategorisine ürün ekle</button>`;
+    block.innerHTML = inner;
+    wrap.appendChild(block);
+  });
+}
+
+function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
+
+function updateItem(id, field, value){
+  const item = data.items.find(i=>i.id===id);
+  if(!item) return;
+  if(field==='price') value = parseFloat(value)||0;
+  item[field] = value;
+  if(field!=='active') return;
+}
+
+function addItem(catId){
+  const id = 'item-' + Date.now();
+  data.items.push({id, cat:catId, name:'Yeni Ürün', weight:'', price:0, desc:'', active:true});
+  renderAdmin();
+}
+
+function deleteItem(id){
+  data.items = data.items.filter(i=>i.id!==id);
+  renderAdmin();
+}
+
+async function saveMenu(){
+  try{
+    if(window.storage && window.storage.set){
+      await window.storage.set(STORAGE_KEY, JSON.stringify(data), true);
+    } else {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+    showToast('Menü kaydedildi ✓');
+    renderCatNav(); renderMenu();
+  }catch(e){
+    showToast('Kaydetme başarısız, tekrar deneyin');
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+loadData();
+</script>
+</body>
+</html>
