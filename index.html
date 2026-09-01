@@ -32,8 +32,8 @@
     --border-active: rgba(201, 122, 62, 0.4);
     
     --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
     --radius-full: 9999px;
   }
 
@@ -59,7 +59,7 @@
 
   .app-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 520px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -137,25 +137,29 @@
     opacity: 0.7;
   }
 
-  /* --- STICKY CATEGORY NAVIGATION --- */
+  /* --- STICKY CATEGORY NAVIGATION (YATAY SCROLL DÜZELTİLDİ) --- */
   .nav-wrapper {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(20, 17, 15, 0.88);
+    background: rgba(20, 17, 15, 0.94);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
-    padding: 12px 16px;
+    padding: 12px 0;
     border-bottom: 1px solid var(--border);
   }
 
   nav.cats {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 2px 0;
+    padding: 2px 16px;
+    scroll-behavior: smooth;
   }
 
   nav.cats::-webkit-scrollbar {
@@ -192,7 +196,7 @@
     transform: translateY(-1px);
   }
 
-  /* --- MENU LIST & CARDS --- */
+  /* --- MENU LIST & HEADERS --- */
   main {
     padding: 18px 16px;
     flex: 1;
@@ -228,38 +232,31 @@
   .item-grid {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 18px;
   }
 
+  /* 1. YEMEKLER İÇİN BÜYÜK KART TASARIMI */
   .menu-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 14px 14px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: relative;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease;
   }
 
   .menu-card:active {
-    transform: scale(0.99);
-    background: var(--surface);
+    transform: scale(0.985);
   }
 
-  /* Visual Thumbnail */
   .card-thumb-wrap {
-    flex: 0 0 82px;
-    width: 82px;
-    height: 82px;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    background: #110e0c;
+    width: 100%;
+    height: 180px;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #110e0c;
+    overflow: hidden;
   }
 
   .card-thumb-wrap img {
@@ -267,74 +264,63 @@
     height: 100%;
     object-fit: cover;
     display: block;
-    transition: transform 0.4s ease;
   }
 
-  .menu-card:hover .card-thumb-wrap img {
-    transform: scale(1.08);
-  }
-
-  .fallback-icon {
+  .card-thumb-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary);
-    opacity: 0.6;
-    padding: 18px;
+    height: 45%;
+    background: linear-gradient(to top, var(--bg-card) 0%, transparent 100%);
+    pointer-events: none;
   }
 
-  .fallback-icon svg {
-    width: 100%;
-    height: 100%;
+  .badge-portion-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(20, 17, 15, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(248, 244, 235, 0.15);
+    color: #f8f4eb;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
   }
 
-  /* Card Content */
   .card-details {
-    flex: 1;
-    min-width: 0;
+    padding: 14px 18px 18px 18px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 4px;
+    gap: 8px;
   }
 
   .card-title-row {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
   }
 
   .card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
-    line-height: 1.25;
-  }
-
-  .card-portion {
-    display: inline-block;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: rgba(255,255,255,0.06);
-    padding: 2px 7px;
-    border-radius: 4px;
-    margin-left: 6px;
-    vertical-align: middle;
+    line-height: 1.2;
   }
 
   .card-price {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 1.12rem;
-    font-weight: 700;
+    font-size: 1.22rem;
+    font-weight: 800;
     color: var(--primary-light);
     white-space: nowrap;
-    letter-spacing: -0.3px;
   }
 
   .card-price span.currency {
@@ -345,25 +331,114 @@
   }
 
   .card-desc {
-    font-size: 0.83rem;
+    font-size: 0.86rem;
     color: var(--text-muted);
-    line-height: 1.35;
-    margin-top: 2px;
+    line-height: 1.45;
     font-weight: 400;
   }
 
-  /* Sold Out State */
-  .menu-card.sold-out {
-    opacity: 0.45;
-    filter: grayscale(0.8);
+  /* 2. İÇECEKLER İÇİN KOMPAKT & ŞIK TASARIM */
+  .item-grid.compact-grid {
+    gap: 10px;
   }
 
-  .menu-card.sold-out .card-price {
-    text-decoration: line-through;
+  .compact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .compact-card:active {
+    transform: scale(0.985);
+    background: var(--surface);
+  }
+
+  .compact-thumb {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #110e0c;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .compact-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .compact-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .compact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .compact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .compact-portion {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
     color: var(--text-dim);
   }
 
-  /* Empty State */
+  .compact-price {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-light);
+    white-space: nowrap;
+  }
+
+  .compact-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fallback-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    opacity: 0.4;
+    padding: 14px;
+  }
+
+  .fallback-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
   .empty-state {
     text-align: center;
     padding: 48px 20px;
@@ -373,7 +448,6 @@
     border: 1px dashed var(--border);
   }
 
-  /* Footer */
   footer {
     text-align: center;
     padding: 24px 20px;
@@ -382,17 +456,12 @@
     border-top: 1px solid var(--border);
     margin-top: 20px;
   }
-
-  footer p {
-    margin-bottom: 6px;
-  }
 </style>
 </head>
 <body>
 
 <div class="app-container">
 
-  <!-- HEADER / LOGO SECTION -->
   <header>
     <div class="logo-wrapper">
       <img src="images/aksu_logo.png" alt="Aksu Çınaraltı Logo" onerror="this.src='images/logo.png'; this.onerror=null;">
@@ -412,7 +481,6 @@
     <nav class="cats" id="catNav"></nav>
   </div>
 
-  <!-- MENU CONTENT AREA -->
   <main>
     <div id="menuList"></div>
   </main>
@@ -436,9 +504,9 @@ const defaultData = {
     {id:'k1', cat:'kahvalti', name:'Serpme Kahvaltı', weight:'Kişi Başı', price:320, desc:'Peynir çeşitleri, zeytin, bal-kaymak, reçel, tereyağ, domates-salatalık, sucuk, pastırma, simit ve taze ekmekler', active:true, image:'images/serpme_kahv.jpg'},
     {id:'k2', cat:'kahvalti', name:'Sade Kahvaltı', weight:'Kişi Başı', price:180, desc:'Peynir, zeytin, reçel, tereyağ, söğüş domates-salatalık, sıcak ekmek sepeti', active:true, image:'images/sade_kahv.jpg'},
     {id:'k3', cat:'kahvalti', name:'Menemen', weight:'Tava', price:190, desc:'Köy yumurtası, sulu domates ve taze köy biberiyle', active:true, image:'images/menemen.jpg'},
-    {id:'k4', cat:'kahvalti', name:'Sucuklu Yumurta', weight:'Tava', price:200, desc:'Özel kasap sucuğu ile tereyağında pişirilmiş', active:true, image:'images/sucuklu_yumurta.jpeg'},
+    {id:'k4', cat:'kahvalti', name:'Sucuklu Yumurta', weight:'Tava', price:200, desc:'Özel kasap sucuğu ile tereyağında pişirilmiş', active:true, image:'images/sucuklu_yumurta.jpg'},
     {id:'k5', cat:'kahvalti', name:'Kaşarlı Yumurta', weight:'Tava', price:180, desc:'Bol erimiş taze kaşar peyniri eşliğinde', active:true, image:'images/kasarlı_yumurta.jpg'},
-    {id:'k6', cat:'kahvalti', name:'Pastırmalı Yumurta', weight:'Tava', price:210, desc:'Kayseri çemenli pastırma ve tereyağı lezzetiyle', active:true, image:'images/pastırmalı_yumurta.jpg'},
+
     {id:'k7', cat:'kahvalti', name:'Kaymaklı Bal Tabağı', weight:'Porsiyon', price:150, desc:'Doğal petek/süzme bal ve taze manda kaymağı', active:true, image:'images/kaymaklı_bal.jpg'},
     {id:'k8', cat:'kahvalti', name:'Simit', weight:'Adet', price:40, desc:'Taş fırından çıtır susamlı sokak simidi', active:true, image:'images/simit.jpg'},
 
@@ -453,25 +521,22 @@ const defaultData = {
     {id:'f8', cat:'firin', name:'Ispanaklı Pide', weight:'Vejetaryen', price:190, desc:'Taze ıspanak, soğan ve hafif lor peyniri harmanıyla', active:true, image:'images/ispanakli-pide.jpg'},
 
     // KEBAP
-    {id:'e1', cat:'kebap', name:'Karışık Kebap', weight:'250 gr', price:675, desc:'Adana, Urfa, tavuk şiş, köfte, kuzu pirzola ve közlenmiş garnitürler', active:true, image:'images/karisik-kebap.png'},
-    {id:'e3', cat:'kebap', name:'Patlıcanlı Kebap', weight:'180 gr', price:380, desc:'Közde pişmiş taze patlıcan ve zırh kıyması dilimleri', active:true, image:'images/patlicanli-kebap.jpg'},
-    {id:'e6', cat:'kebap', name:'Izgara Köfte', weight:'160 gr', price:350, desc:'Geleneksel anne köftesi reçetesi, ızgara biber ve pilav ile', active:true, image:'images/kofte.jpg'},
-    {id:'e7', cat:'kebap', name:'Kuzu Ciğer Şiş', weight:'160 gr', price:400, desc:'Közlenmiş lavaş, sumaklı soğan ve baharatlar ile', active:true, image:'images/ciger.jpg'},
+    {id:'e1', cat:'kebap', name:'Karışık Kebap', weight:'250 gr', price:675, desc:'Adana, Urfa, tavuk şiş, köfte, kuzu pirzola ve közlenmiş garnitürler', active:true, image:'images/karisik-kebap.jpg'},
+    {id:'e3', cat:'kebap', name:'Patlıcanlı Kebap', weight:'180 gr', price:380, desc:'Közde pişmiş taze patlıcan ve zırh kıyması dilimleri', active:true, image:'images/patlıcan-kebabi.jpg'},
+    {id:'e6', cat:'kebap', name:'Izgara Köfte', weight:'160 gr', price:350, desc:'Geleneksel anne köftesi reçetesi, ızgara biber ve pilav ile', active:true, image:'images/izgara-kofte.jpg'},
     {id:'e8', cat:'kebap', name:'Adana Kebap', weight:'180 gr', price:350, desc:'Acılı zırh kıyması, lavaş, köz biber ve domates ile', active:true, image:'images/adana.jpg'},
     {id:'e9', cat:'kebap', name:'Urfa Kebap', weight:'180 gr', price:350, desc:'Acısız özel baharatlı kebap lezzeti', active:true, image:'images/urfa.jpg'},
     {id:'e22', cat:'kebap', name:'Kuzu Pirzola', weight:'250 gr', price:600, desc:'Kekikli zeytinyağı ile marine edilmiş taze kuzu pirzola', active:true, image:'images/kuzu-pirzola.jpg'},
     {id:'e24', cat:'kebap', name:'Dana Lokum', weight:'180 gr', price:600, desc:'Yumuşacık marine dana bonfile dilimleri', active:true, image:'images/dana-lokum.jpg'},
     {id:'e25', cat:'kebap', name:'Küşleme', weight:'180 gr', price:600, desc:'Kuzunun en yumuşak yerinden özel ızgara lezzeti', active:true, image:'images/kusleme.jpg'},
-    {id:'e27', cat:'kebap', name:'Tavuk Şiş', weight:'200 gr', price:320, desc:'Özel marinasyonlu sulu tavuk göğsü şişleri', active:true, image:'images/tavuk-sis.jpg'},
-    {id:'e29', cat:'kebap', name:'Tavuk Pirzola', weight:'200 gr', price:320, desc:'Kemiksiz ızgara tavuk but pirzola', active:true, image:'images/tavuk-pirzola.jpg'},
-    {id:'e30', cat:'kebap', name:'Tavuk Kanat', weight:'200 gr', price:350, desc:'Közde nar gibi kızarmış marine tavuk kanatları', active:true, image:'images/tavuk-kanat.jpg'},
+    {id:'e27', cat:'kebap', name:'Antrikot', weight:'200 gr', price:320, desc:'Marine edilmiş ızgara dana antrikot', active:true, image:'images/antrikot.jpg'},
 
     // İÇECEKLER
     {id:'ic1', cat:'icecekler', name:'Çay', weight:'Bardak', price:20, desc:'İnce belli bardakta taze demlenmiş Rize çayı', active:true, image:'images/cay.jpg'},
     {id:'ic2', cat:'icecekler', name:'Demlik / Semaver Çay', weight:'4-6 Kişilik', price:160, desc:'Masada sıcak köz keyfiyle taze demlik çay', active:true, image:'images/demlik_cay.jpg'},
     {id:'ic3', cat:'icecekler', name:'Türk Kahvesi', weight:'Fincan', price:60, desc:'Geleneksel bol köpüklü, közde pişirme lezzetinde', active:true, image:'images/t_kahvesi.jpg'},
     {id:'ic4', cat:'icecekler', name:'Kola', weight:'330 ml · Kutu', price:50, desc:'Soğuk servis edilir', active:true, image:'images/cola_turka.jpg'},
-    {id:'ic5', cat:'icecekler', name:'Sarı Kola / Fanta', weight:'330 ml · Kutu', price:50, desc:'Ferahlatıcı portakal aromalı', active:true, image:'images/sarı_kola.jpg'},
+
     {id:'ic7', cat:'icecekler', name:'Yayık Ayran', weight:'250 ml · Bakır Kupa', price:35, desc:'Bol köpüklü, geleneksel yayık ayranı', active:true, image:'images/ayran.jpg'},
     {id:'ic8', cat:'icecekler', name:'Şalgam Suyu', weight:'330 ml · Şişe', price:40, desc:'Acılı / Acısız orijinal Adana şalgamı', active:true, image:'images/salgam.jpg'},
     {id:'ic9', cat:'icecekler', name:'Maden Suyu / Soda', weight:'200 ml · Cam Şişe', price:25, desc:'Kızılay / Beypazarı', active:true, image:'images/soda.jpg'},
@@ -502,6 +567,7 @@ function renderCatNav(){
       activeCat = c.id; 
       renderCatNav(); 
       renderMenu(); 
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
     };
     nav.appendChild(btn);
   });
@@ -522,32 +588,57 @@ function renderMenu(){
   if(items.length === 0){
     html += `<div class="empty-state">Bu kategoriye ait ürün bulunamadı.</div>`;
   } else {
-    html += `<div class="item-grid">`;
+    // İçecekler kategorisi için kompakt ızgara, diğerleri için büyük kartlar
+    const isBeverage = cat.id === 'icecekler';
+    html += `<div class="item-grid ${isBeverage ? 'compact-grid' : ''}">`;
+    
     items.forEach(i => {
       const fallback = `<div class="fallback-icon">${fallbackSVGs[cat.id] || ''}</div>`;
-      const thumb = i.image
+      const thumbImg = i.image
         ? `<img src="${escapeAttr(i.image)}" alt="${escapeAttr(i.name)}" loading="lazy" onerror="this.outerHTML='${escapeAttr(fallback)}'">`
         : fallback;
 
-      html += `
-        <div class="menu-card ${i.active === false ? 'sold-out' : ''}">
-          <div class="card-thumb-wrap">
-            ${thumb}
-          </div>
-          <div class="card-details">
-            <div class="card-title-row">
-              <div class="card-title">
-                ${i.name}
-                ${i.weight ? `<span class="card-portion">${i.weight}</span>` : ''}
-              </div>
-              <div class="card-price">
-                ${Number(i.price).toLocaleString('tr-TR')}<span class="currency">TL</span>
-              </div>
+      if(isBeverage) {
+        // İçeceklere Özel Kompakt Kart
+        html += `
+          <div class="compact-card ${i.active === false ? 'sold-out' : ''}">
+            <div class="compact-thumb">
+              ${thumbImg}
             </div>
-            ${i.desc ? `<div class="card-desc">${i.desc}</div>` : ''}
+            <div class="compact-info">
+              <div class="compact-header">
+                <div>
+                  <span class="compact-title">${i.name}</span>
+                  ${i.weight ? `<div class="compact-portion">${i.weight}</div>` : ''}
+                </div>
+                <div class="compact-price">
+                  ${Number(i.price).toLocaleString('tr-TR')}<span class="currency">TL</span>
+                </div>
+              </div>
+              ${i.desc ? `<div class="compact-desc">${i.desc}</div>` : ''}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } else {
+        // Yemeklere Özel Büyük Kart
+        html += `
+          <div class="menu-card ${i.active === false ? 'sold-out' : ''}">
+            <div class="card-thumb-wrap">
+              ${thumbImg}
+              ${i.weight ? `<div class="badge-portion-overlay">${i.weight}</div>` : ''}
+            </div>
+            <div class="card-details">
+              <div class="card-title-row">
+                <div class="card-title">${i.name}</div>
+                <div class="card-price">
+                  ${Number(i.price).toLocaleString('tr-TR')}<span class="currency">TL</span>
+                </div>
+              </div>
+              ${i.desc ? `<div class="card-desc">${i.desc}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }
     });
     html += `</div>`;
   }
