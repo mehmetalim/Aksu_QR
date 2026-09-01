@@ -18,6 +18,7 @@
     --ember:#9c3b22;
     --olive:#6f7d4e;
     --wheat:#b9871f;
+    --teal:#3c7a72;
     --cream:#f1e6d8;
     --line:rgba(42,31,22,0.25);
   }
@@ -106,7 +107,7 @@
 
   <header>
     <div class="brand"> Aksu Çınar<em>altı</em></div>
-    <div class="tag">Kahvaltı · Kebap & Izgara · Fırından Pide-Lahmacun</div>
+    <div class="tag">Kahvaltı · Kebap & Izgara · Fırından Pide-Lahmacun · İçecekler</div>
   </header>
 
   <div id="menuView">
@@ -130,7 +131,7 @@
       <div id="adminPanel" style="display:none;">
         <h2>Menü Yönetimi</h2>
         <p class="muted">Fiyatları düzenleyin, ürün ekleyin/kaldırın. Değişiklikler kaydettiğinizde tüm müşterilerin gördüğü menüde anında güncellenir.<br><br>
-        <strong style="color:var(--cream);">Ürün fotoğrafı eklemek için:</strong> PostImages, Imgur veya herhangi bir resim yükleme sitesinden aldığınız doğrudan bağlantıyı (.jpg/.png) "Görsel URL" alanına yapıştırın. Link boş bırakılırsa şık bir kategori ikonu otomatik gösterilir.</p>
+        <strong style="color:var(--cream);">Ürün fotoğrafı eklemek için:</strong> PostImages, Imgur veya benzeri sitelerden aldığınız doğrudan bağlantıyı (.jpg/.png) "Görsel URL" alanına yapıştırın. Link boş bırakılırsa kategori ikonu otomatik gösterilir.</p>
         <div id="adminCats"></div>
         <div class="save-bar">
           <button class="save-secondary" onclick="showMenu()">Menüye Dön</button>
@@ -151,27 +152,26 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'cinaralti-menu-data';
+const STORAGE_KEY = 'cinaralti-menu-data-v2';
 const ADMIN_PIN = '1234';
 
 const defaultData = {
   categories: [
-    {id:'kahvalti', name:'Kahvaltı', icon:'☕', accent:'olive'},
+    {id:'kahvalti', name:'Kahvaltı', icon:'🍳', accent:'olive'},
     {id:'kebap', name:'Kebap & Et Ürünleri', icon:'🔥', accent:'ember'},
-    {id:'firin', name:'Fırın Ürünleri', icon:'🫓', accent:'wheat'}
+    {id:'firin', name:'Fırın Ürünleri', icon:'🫓', accent:'wheat'},
+    {id:'icecekler', name:'İçecekler', icon:'🥤', accent:'teal'}
   ],
   items: [
     // KAHVALTI
     {id:'k1', cat:'kahvalti', name:'Serpme Kahvaltı', weight:'Kişi Başı', price:320, desc:'Peynir çeşitleri, zeytin, bal-kaymak, reçel, tereyağ, domates-salatalık, sucuk, pastırma, simit ve ekmek çeşitleri', active:true, image:'https://i.postimg.cc/tZ3GmmwP/serpme-kahv.jpg'},
     {id:'k2', cat:'kahvalti', name:'Sade Kahvaltı', weight:'Kişi Başı', price:180, desc:'Peynir, zeytin, reçel, tereyağ, domates-salatalık, ekmek', active:true, image:'https://i.postimg.cc/G8FnSSV8/sade-kahv.jpg'},
-    {id:'k3', cat:'kahvalti', name:'Menemen', weight:'Tava', price:190, desc:'', active:true, image: 'https://i.postimg.cc/hXcs9Z1j/menemen.jpg'},
-    {id:'k4', cat:'kahvalti', name:'Sucuklu Yumurta', weight:'Tava', price:200, desc:'', active:true, image: 'https://i.postimg.cc/jDcXv6Mq/sucuklu-yumurta.webp'},
-    {id:'k5', cat:'kahvalti', name:'Kaşarlı Yumurta', weight:'Tava', price:180, desc:'', active:true, image: 'https://i.postimg.cc/68tcdbfq/kasarli-yumurta.jpg'},
-    {id:'k6', cat:'kahvalti', name:'Pastırmalı Yumurta', weight:'Tava', price:210, desc:'', active:true, image: 'https://i.postimg.cc/xX5RgG6Q/pastirmali-yumurta.jpg'},
-    {id:'k7', cat:'kahvalti', name:'Kaymaklı Bal Tabağı', weight:'', price:150, desc:'', active:true, image: 'https://i.postimg.cc/ZW4Hrsx0/kaymakli-bal.jpg'},
-    {id:'k8', cat:'kahvalti', name:'Simit', weight:'Adet', price:40, desc:'', active:true, image: 'https://i.postimg.cc/Hrz2306p/simit.jpg'},
-    {id:'k9', cat:'kahvalti', name:'Çay', weight:'Bardak', price:20, desc:'', active:true, image: 'https://i.postimg.cc/jDtcz34j/cay.jpg'},
-    {id:'k10', cat:'kahvalti', name:'Türk Kahvesi', weight:'Fincan', price:60, desc:'', active:true, image: 'https://i.postimg.cc/68c0zVMW/t-kahvesi.jpg'},
+    {id:'k3', cat:'kahvalti', name:'Menemen', weight:'Tava', price:190, desc:'', active:true, image:'https://i.postimg.cc/hXcs9Z1j/menemen.jpg'},
+    {id:'k4', cat:'kahvalti', name:'Sucuklu Yumurta', weight:'Tava', price:200, desc:'', active:true, image:'https://i.postimg.cc/jDcXv6Mq/sucuklu-yumurta.webp'},
+    {id:'k5', cat:'kahvalti', name:'Kaşarlı Yumurta', weight:'Tava', price:180, desc:'', active:true, image:'https://i.postimg.cc/68tcdbfq/kasarli-yumurta.jpg'},
+    {id:'k6', cat:'kahvalti', name:'Pastırmalı Yumurta', weight:'Tava', price:210, desc:'', active:true, image:'https://i.postimg.cc/xX5RgG6Q/pastirmali-yumurta.jpg'},
+    {id:'k7', cat:'kahvalti', name:'Kaymaklı Bal Tabağı', weight:'', price:150, desc:'', active:true, image:'https://i.postimg.cc/ZW4Hrsx0/kaymakli-bal.jpg'},
+    {id:'k8', cat:'kahvalti', name:'Simit', weight:'Adet', price:40, desc:'', active:true, image:'https://i.postimg.cc/Hrz2306p/simit.jpg'},
 
     // FIRIN
     {id:'f1', cat:'firin', name:'Lahmacun', weight:'Adet', price:70, desc:'', active:true},
@@ -184,37 +184,39 @@ const defaultData = {
     {id:'f8', cat:'firin', name:'Ispanaklı Pide', weight:'Vejetaryen', price:190, desc:'', active:true},
 
     // KEBAP
-    {id:'e1', cat:'kebap', name:'Karışık Kebap (Tavuklu)', weight:'250 gr', price:675, desc:'', active:true},
-    {id:'e2', cat:'kebap', name:'Karışık Kebap (Tavuksuz)', weight:'250 gr', price:725, desc:'', active:true},
+    {id:'e1', cat:'kebap', name:'Karışık Kebap', weight:'250 gr', price:675, desc:'', active:true},
+
     {id:'e3', cat:'kebap', name:'Patlıcanlı Kebap', weight:'180 gr', price:380, desc:'', active:true},
-    {id:'e4', cat:'kebap', name:'Domatesli Kebap', weight:'2 Şiş / 180 gr', price:380, desc:'', active:true},
-    {id:'e5', cat:'kebap', name:'Fıstıklı Kebap', weight:'160 gr', price:380, desc:'', active:true},
+
     {id:'e6', cat:'kebap', name:'Köfte', weight:'160 gr', price:350, desc:'', active:true},
     {id:'e7', cat:'kebap', name:'Ciğer', weight:'160 gr', price:400, desc:'', active:true},
-    {id:'e8', cat:'kebap', name:'Satır Adana', weight:'180 gr', price:350, desc:'', active:true},
-    {id:'e9', cat:'kebap', name:'Satır Urfa', weight:'180 gr', price:350, desc:'', active:true},
-    {id:'e10', cat:'kebap', name:'Simit Kebabı', weight:'180 gr', price:400, desc:'', active:true},
-    {id:'e11', cat:'kebap', name:'Haşhaş Kebabı', weight:'180 gr', price:400, desc:'', active:true},
-    {id:'e12', cat:'kebap', name:'Yoğurtlu Kebap', weight:'180 gr', price:350, desc:'', active:true},
-    {id:'e13', cat:'kebap', name:'Beyti Sarma', weight:'160 gr', price:380, desc:'', active:true},
-    {id:'e14', cat:'kebap', name:'Fırın Beyti', weight:'160 gr · Kaşarlı', price:420, desc:'', active:true},
-    {id:'e15', cat:'kebap', name:'Çıtır Beyti', weight:'160 gr · Kaşarlı-Sucuklu', price:420, desc:'', active:true},
-    {id:'e16', cat:'kebap', name:'Antep Usulü Kebap', weight:'160 gr · Altı Ezmeli', price:420, desc:'', active:true},
-    {id:'e17', cat:'kebap', name:'Alinazik', weight:'180 gr', price:420, desc:'', active:true},
-    {id:'e18', cat:'kebap', name:'Abagannuş', weight:'180 gr', price:450, desc:'', active:true},
-    {id:'e19', cat:'kebap', name:'Et Şiş', weight:'170 gr', price:400, desc:'', active:true},
-    {id:'e20', cat:'kebap', name:'Çöp Şiş', weight:'170 gr', price:380, desc:'', active:true},
-    {id:'e21', cat:'kebap', name:'Kuyruklu Çöp Şiş', weight:'170 gr · Pazarbaşı', price:400, desc:'', active:true},
+    {id:'e8', cat:'kebap', name:' Adana', weight:'180 gr', price:350, desc:'', active:true},
+    {id:'e9', cat:'kebap', name:' Urfa', weight:'180 gr', price:350, desc:'', active:true},
+
     {id:'e22', cat:'kebap', name:'Kuzu Pirzola', weight:'250 gr', price:600, desc:'', active:true},
-    {id:'e23', cat:'kebap', name:'Kuzu Lokum', weight:'180 gr', price:600, desc:'', active:true},
+
     {id:'e24', cat:'kebap', name:'Dana Lokum', weight:'180 gr', price:600, desc:'', active:true},
     {id:'e25', cat:'kebap', name:'Küsleme', weight:'180 gr', price:600, desc:'', active:true},
-    {id:'e26', cat:'kebap', name:'Çınaraltı Spesiyal', weight:'200 gr', price:300, desc:'Karışık kebap değildir', active:true},
-    {id:'e27', cat:'kebap', name:'Tavuk Şiş (Göğüsten)', weight:'200 gr', price:320, desc:'', active:true},
-    {id:'e28', cat:'kebap', name:'Tavuk Şiş (Buttan)', weight:'200 gr', price:320, desc:'', active:true},
+
+    {id:'e27', cat:'kebap', name:'Tavuk Şiş ', weight:'200 gr', price:320, desc:'', active:true},
+
     {id:'e29', cat:'kebap', name:'Tavuk Pirzola', weight:'200 gr', price:320, desc:'', active:true},
     {id:'e30', cat:'kebap', name:'Tavuk Kanat', weight:'200 gr', price:350, desc:'', active:true},
-    {id:'e31', cat:'kebap', name:'Çıtır Kanat', weight:'200 gr', price:350, desc:'', active:true}
+
+
+    // İÇECEKLER
+    {id:'ic1', cat:'icecekler', name:'Çay', weight:'Bardak', price:20, desc:'Taze demlenmiş Rize çayı', active:true, image:'https://i.postimg.cc/jDtcz34j/cay.jpg'},
+    {id:'ic2', cat:'icecekler', name:'Demlik Çay', weight:'Semaver / Demlik', price:160, desc:'4-6 kişilik taze demlik çay', active:true},
+    {id:'ic3', cat:'icecekler', name:'Türk Kahvesi', weight:'Fincan', price:60, desc:'Geleneksel közde pişirme lezzetinde', active:true, image:'https://i.postimg.cc/68c0zVMW/t-kahvesi.jpg'},
+    {id:'ic4', cat:'icecekler', name:'Kola', weight:'330 ml · Kutu', price:50, desc:'Coca-Cola / Zero', active:true},
+    {id:'ic5', cat:'icecekler', name:'Fanta', weight:'330 ml · Kutu', price:50, desc:'', active:true},
+    {id:'ic6', cat:'icecekler', name:'Sprite', weight:'330 ml · Kutu', price:50, desc:'', active:true},
+    {id:'ic7', cat:'icecekler', name:'Ayran', weight:'250 ml · Şişe / Açık', price:35, desc:'Köpüklü yayık ayranı', active:true},
+    {id:'ic8', cat:'icecekler', name:'Şalgam Suyu', weight:'330 ml · Cam Şişe', price:40, desc:'Acılı / Acısız Adana şalgamı', active:true},
+    {id:'ic9', cat:'icecekler', name:'Soda (Maden Suyu)', weight:'200 ml · Cam Şişe', price:25, desc:'Kızılay / Beypazarı', active:true},
+    {id:'ic10', cat:'icecekler', name:'Meyveli Soda', weight:'200 ml · Cam Şişe', price:30, desc:'Limonlu, Elmalı vb.', active:true},
+    {id:'ic11', cat:'icecekler', name:'Su', weight:'0.5 lt · Şişe', price:15, desc:'Doğal kaynak suyu', active:true},
+    {id:'ic12', cat:'icecekler', name:'Taze Sıkma Portakal Suyu', weight:'Büyük Bardak', price:90, desc:'%100 taze sıkılmış', active:true}
   ]
 };
 
@@ -238,7 +240,7 @@ async function loadData(){
 }
 
 function accentVar(a){
-  return {olive:'var(--olive)', ember:'var(--ember)', wheat:'var(--wheat)', copper:'var(--copper)'}[a] || 'var(--copper)';
+  return {olive:'var(--olive)', ember:'var(--ember)', wheat:'var(--wheat)', teal:'var(--teal)', copper:'var(--copper)'}[a] || 'var(--copper)';
 }
 
 const banners = {
@@ -274,13 +276,30 @@ const banners = {
     <circle cx="300" cy="55" r="4" fill="#7a3b1a"/><circle cx="320" cy="66" r="4" fill="#7a3b1a"/><circle cx="345" cy="52" r="4" fill="#7a3b1a"/><circle cx="360" cy="64" r="4" fill="#7a3b1a"/>
     <rect x="440" y="30" width="50" height="60" rx="6" fill="#e8c07a"/>
     <circle cx="450" cy="42" r="3" fill="#7a3b1a"/><circle cx="465" cy="50" r="3" fill="#7a3b1a"/><circle cx="478" cy="40" r="3" fill="#7a3b1a"/><circle cx="455" cy="65" r="3" fill="#7a3b1a"/><circle cx="472" cy="70" r="3" fill="#7a3b1a"/>
+  </svg>`,
+  icecekler: `<svg class="banner" viewBox="0 0 520 108" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="520" height="108" fill="#2c5c56"/>
+    <circle cx="80" cy="54" r="30" fill="#3c7a72"/>
+    <path d="M70 74 L90 74 L96 38 L64 38 Z" fill="#eee0c8"/>
+    <line x1="80" y1="24" x2="88" y2="52" stroke="#b8703f" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="210" cy="54" r="28" fill="#3c7a72"/>
+    <path d="M198 42 C198 42 204 36 210 36 C216 36 222 42 222 42 L220 68 C220 74 200 74 200 68 Z" fill="#eee0c8"/>
+    <path d="M222 46 C226 46 228 52 224 56" stroke="#eee0c8" stroke-width="2.5" fill="none"/>
+    <ellipse cx="330" cy="72" rx="34" ry="10" fill="#234742"/>
+    <path d="M312 70 L348 70 L344 32 L316 32 Z" fill="#eee0c8"/>
+    <rect x="320" y="44" width="20" height="16" rx="2" fill="#9c3b22"/>
+    <circle cx="440" cy="54" r="26" fill="#3c7a72"/>
+    <circle cx="432" cy="48" r="4" fill="#eee0c8" opacity="0.6"/>
+    <circle cx="448" cy="40" r="3" fill="#eee0c8" opacity="0.6"/>
+    <circle cx="442" cy="62" r="5" fill="#eee0c8" opacity="0.6"/>
   </svg>`
 };
 
 const fallbackIcons = {
   kahvalti: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v8a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V8"/><path d="M8 3v3M12 3v3M16 3v3"/></svg>`,
   kebap: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><line x1="6" y1="2" x2="18" y2="22"/><rect x="4" y="6" width="5" height="4" rx="1"/><rect x="10" y="10" width="5" height="4" rx="1"/><rect x="15" y="15" width="5" height="4" rx="1"/></svg>`,
-  firin: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><ellipse cx="12" cy="14" rx="9" ry="5"/><circle cx="9" cy="12" r=".8" fill="#5b4a3a"/><circle cx="13" cy="15" r=".8" fill="#5b4a3a"/><circle cx="16" cy="11" r=".8" fill="#5b4a3a"/></svg>`
+  firin: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><ellipse cx="12" cy="14" rx="9" ry="5"/><circle cx="9" cy="12" r=".8" fill="#5b4a3a"/><circle cx="13" cy="15" r=".8" fill="#5b4a3a"/><circle cx="16" cy="11" r=".8" fill="#5b4a3a"/></svg>`,
+  icecekler: `<svg viewBox="0 0 24 24" fill="none" stroke="#5b4a3a" stroke-width="1.6"><path d="M7 2h10l-1.5 16a3 3 0 0 1-3 2.8h-1A3 3 0 0 1 8.5 18L7 2z"/><line x1="6" y1="6" x2="18" y2="6"/><line x1="12" y1="2" x2="15" y2="-2"/></svg>`
 };
 
 function renderCatNav(){
@@ -297,7 +316,7 @@ function renderCatNav(){
 
 function renderMenu(){
   const wrap = document.getElementById('menuList');
-  const cat = data.categories.find(c=>c.id===activeCat);
+  const cat = data.categories.find(c=>c.id===activeCat) || data.categories[0];
   const items = data.items.filter(i=>i.cat===activeCat);
   let html = banners[cat.id] || '';
   html += `<div class="cat-title"><h2>${cat.icon} ${cat.name}</h2><span class="sub">${items.length} çeşit</span></div>
