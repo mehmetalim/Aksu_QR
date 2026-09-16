@@ -1,0 +1,762 @@
+{% load static %}<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#14110f">
+<title>Aksu Çınaraltı | QR Dijital Menü</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-main: #14110f;
+    --bg-card: #1e1916;
+    --surface: #27211d;
+    --surface-hover: #322b26;
+
+    --primary: #c97a3e;
+    --primary-light: #e4975e;
+    --primary-glow: rgba(201, 122, 62, 0.25);
+
+    --accent-gold: #d4af37;
+    --accent-green: #2d5a3e;
+
+    --text-main: #f8f4eb;
+    --text-muted: #a69888;
+    --text-dim: #7a6e60;
+
+    --border: rgba(248, 244, 235, 0.08);
+    --border-active: rgba(201, 122, 62, 0.4);
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(201, 122, 62, 0.12) 0%, transparent 60%),
+      radial-gradient(circle at 100% 100%, rgba(45, 90, 62, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .app-container {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 50px;
+  }
+
+  /* --- HEADER & HERO --- */
+  header {
+    padding: 36px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+
+  .logo-wrapper {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-full);
+    background: #ffffff;
+    padding: 6px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1), 0 0 20px var(--primary-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .logo-wrapper:hover {
+    transform: scale(1.04) rotate(1deg);
+  }
+
+  .logo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-full);
+  }
+
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+  }
+
+  .brand-title span {
+    color: var(--primary-light);
+    font-style: italic;
+  }
+
+  .brand-subtitle {
+    margin-top: 8px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    line-height: 1.4;
+  }
+
+  .brand-subtitle span.dot {
+    width: 4px;
+    height: 4px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    opacity: 0.7;
+  }
+
+  /* --- STICKY CATEGORY NAVIGATION --- */
+  .nav-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(20, 17, 15, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  nav.cats {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 2px 16px;
+    scroll-behavior: smooth;
+  }
+
+  nav.cats::-webkit-scrollbar {
+    display: none;
+  }
+
+  nav.cats button {
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  nav.cats button .cat-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  nav.cats button.active {
+    background: linear-gradient(135deg, var(--primary) 0%, #a45321 100%);
+    border-color: var(--primary-light);
+    color: #ffffff;
+    box-shadow: 0 4px 16px var(--primary-glow);
+    transform: translateY(-1px);
+  }
+
+  /* --- ARAMA --- */
+  .search-wrap {
+    padding: 16px 16px 0;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .search-wrap input::placeholder { color: var(--text-dim); }
+  .search-wrap input:focus { border-color: var(--border-active); }
+
+  /* --- MENU LIST & HEADERS --- */
+  main {
+    padding: 18px 16px;
+    flex: 1;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 6px 4px 18px 4px;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-header .count-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary-light);
+    background: rgba(201, 122, 62, 0.15);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(201, 122, 62, 0.2);
+    white-space: nowrap;
+  }
+
+  .item-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* 1. YEMEKLER İÇİN BÜYÜK KART TASARIMI */
+  .menu-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease;
+  }
+
+  .menu-card:active {
+    transform: scale(0.985);
+  }
+
+  .card-thumb-wrap {
+    width: 100%;
+    height: 180px;
+    position: relative;
+    background: #110e0c;
+    overflow: hidden;
+  }
+
+  .card-thumb-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .card-thumb-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45%;
+    background: linear-gradient(to top, var(--bg-card) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .badge-portion-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    background: rgba(20, 17, 15, 0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(248, 244, 235, 0.15);
+    color: #f8f4eb;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+  }
+
+  .card-details {
+    padding: 14px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+  }
+
+  .card-price {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.22rem;
+    font-weight: 800;
+    color: var(--primary-light);
+    white-space: nowrap;
+  }
+
+  .card-price span.currency {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-left: 2px;
+  }
+
+  .card-desc {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+  /* 2. İÇECEKLER İÇİN KOMPAKT & ŞIK TASARIM */
+  .item-grid.compact-grid {
+    gap: 10px;
+  }
+
+  .compact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .compact-card:active {
+    transform: scale(0.985);
+    background: var(--surface);
+  }
+
+  .compact-thumb {
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #110e0c;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .compact-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .compact-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .compact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .compact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .compact-price {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary-light);
+    white-space: nowrap;
+  }
+
+  .compact-price span.currency {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-left: 2px;
+  }
+
+  .compact-desc {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fallback-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    opacity: 0.4;
+    padding: 14px;
+  }
+
+  .fallback-icon svg {
+    width: 100%;
+    height: 100%;
+    max-width: 80px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border);
+    line-height: 1.6;
+  }
+
+  /* --- YÜKLENİYOR İSKELETİ --- */
+  .skeleton-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    height: 250px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skeleton-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, rgba(248, 244, 235, 0.05) 50%, transparent 100%);
+    animation: shimmer 1.3s infinite;
+  }
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px 20px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+    line-height: 1.8;
+  }
+
+  footer .version {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <header>
+    <div class="logo-wrapper">
+      <img src="{% static 'images/aksu_logo.png' %}" alt="Aksu Çınaraltı Logo">
+    </div>
+    <h1 class="brand-title">Aksu <span>Çınaraltı</span></h1>
+    <div class="brand-subtitle">
+      <span>Geleneksel Lezzetler</span>
+      <span class="dot"></span>
+      <span>Közde Kahve &amp; Semaver</span>
+      <span class="dot"></span>
+      <span>Taş Fırın &amp; Kebap</span>
+    </div>
+  </header>
+
+  <!-- STICKY CATEGORY TABS -->
+  <div class="nav-wrapper">
+    <nav class="cats" id="catNav"></nav>
+  </div>
+
+  <div class="search-wrap">
+    <input id="search" type="search" placeholder="Ürün ara…" autocomplete="off" aria-label="Ürün ara">
+  </div>
+
+  <main>
+    <div id="menuList">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Fiyatlarımıza KDV dahildir · Tüm ürünlerimiz taze hazırlanmaktadır.</p>
+    <p>Aksu Çınaraltı &copy; <span id="year"></span> · Afiyet Olsun</p>
+    <span class="version" id="catalogMeta"></span>
+  </footer>
+
+</div>
+
+<script>
+/* ---------------------------------------------------------------------
+   Menü verisi Django'dan gelir:  GET /api/menu  (pos.views.get_menu)
+   Yanıt = CatalogVersion.snapshot:
+     {
+       version, publishedAt,
+       categories: [{id, name, icon}],
+       products:   [{id, name, category, price (kuruş), active, description, image}]
+     }
+   POS ya da Django admin katalogu yayımladığında sayfa kendini tazeler.
+--------------------------------------------------------------------- */
+
+const STATIC_URL = "{{ static_url }}";
+const MENU_API   = "{% url 'get_menu' %}";
+const REFRESH_MS = 60000;
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+let catalog = null;
+let activeCat = null;
+let query = '';
+
+/* --- yardımcılar --- */
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// POS fiyatları kuruş cinsinden tutar.
+const money = kurus => (Number(kurus || 0) / 100)
+  .toLocaleString('tr-TR', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+
+// POS görselleri "images/urun.jpg" biçiminde göreli gönderir; Django /static/ altında sunar.
+const imgUrl = p => (/^(https?:)?\/\//.test(p) || String(p).startsWith('/'))
+  ? p
+  : STATIC_URL + String(p).replace(/^\/+/, '');
+
+// Türkçe arama için küçük harfe çevirme.
+const lower = s => String(s || '').toLocaleLowerCase('tr');
+
+const FALLBACK_SVGS = {
+  kahvalti: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v8a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V8"/><path d="M8 3v3M12 3v3M16 3v3"/></svg>',
+  kebap:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="6" y1="2" x2="18" y2="22"/><rect x="4" y="6" width="5" height="4" rx="1"/><rect x="10" y="10" width="5" height="4" rx="1"/><rect x="15" y="15" width="5" height="4" rx="1"/></svg>',
+  firin:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="14" rx="9" ry="5"/><circle cx="9" cy="12" r=".8" fill="currentColor"/><circle cx="13" cy="15" r=".8" fill="currentColor"/><circle cx="16" cy="11" r=".8" fill="currentColor"/></svg>',
+  icecek:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 2h10l-1.5 16a3 3 0 0 1-3 2.8h-1A3 3 0 0 1 8.5 18L7 2z"/><line x1="6" y1="6" x2="18" y2="6"/></svg>',
+  default:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 13a4 4 0 0 0 8 0"/></svg>'
+};
+
+// Kategori kodları POS'ta serbest metindir; ikon/düzen için ada ve koda bakarak eşliyoruz.
+function catKey(cat) {
+  const k = lower((cat.id || '') + ' ' + (cat.name || ''))
+    .replace(/[çğışöü]/g, m => ({'ç':'c','ğ':'g','ı':'i','ş':'s','ö':'o','ü':'u'}[m]))
+    .replace(/[^a-z]/g, '');
+  if (k.includes('icecek') || k.includes('drink')) return 'icecek';
+  if (k.includes('kahvalt')) return 'kahvalti';
+  if (k.includes('kebap') || k.includes('izgara') || k.includes('grill')) return 'kebap';
+  if (k.includes('firin') || k.includes('pide') || k.includes('lahmacun')) return 'firin';
+  return 'default';
+}
+
+// İçecekler kompakt satır, yemekler büyük görselli kart olarak listelenir.
+const isBeverageCat = cat => catKey(cat) === 'icecek';
+
+/* --- veri --- */
+async function loadMenu() {
+  try {
+    const r = await fetch(MENU_API, {cache: 'no-store'});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (!data || !Array.isArray(data.categories) || !Array.isArray(data.products)) {
+      throw new Error('Geçersiz menü verisi');
+    }
+    catalog = data;
+
+    // Seçili kategori yayından kalkmışsa ilk kategoriye dön.
+    if (!catalog.categories.some(c => c.id === activeCat)) {
+      activeCat = catalog.categories.length ? catalog.categories[0].id : null;
+    }
+
+    renderCatNav();
+    renderMenu();
+
+    const published = catalog.publishedAt ? new Date(catalog.publishedAt) : null;
+    document.getElementById('catalogMeta').textContent =
+      'Menü sürümü v' + (catalog.version ?? '—') +
+      (published && !isNaN(published) ? ' · Güncelleme: ' + published.toLocaleString('tr-TR') : '');
+  } catch (e) {
+    // Arka plan tazelemesi başarısızsa ekrandaki menü olduğu gibi kalır.
+    if (!catalog) {
+      document.getElementById('menuList').innerHTML =
+        '<div class="empty-state">Menü şu anda yüklenemiyor.<br>Lütfen birazdan tekrar deneyin.</div>';
+    }
+  }
+}
+
+/* --- render --- */
+function renderCatNav() {
+  const nav = document.getElementById('catNav');
+  nav.innerHTML = '';
+  (catalog.categories || []).forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = c.id === activeCat ? 'active' : '';
+    btn.innerHTML = (c.icon ? '<span class="cat-icon">' + esc(c.icon) + '</span> ' : '') +
+                    '<span>' + esc(c.name) + '</span>';
+    btn.onclick = () => {
+      activeCat = c.id;
+      renderCatNav();
+      renderMenu();
+      // renderCatNav düğmeleri yeniden ürettiği için aktif olanı yeniden buluyoruz.
+      const active = nav.querySelector('button.active');
+      (active || btn).scrollIntoView({behavior: 'smooth', inline: 'center', block: 'nearest'});
+    };
+    nav.appendChild(btn);
+  });
+}
+
+function renderMenu() {
+  const wrap = document.getElementById('menuList');
+  const cats = catalog.categories || [];
+  const cat = cats.find(c => c.id === activeCat) || cats[0];
+
+  if (!cat) {
+    wrap.innerHTML = '<div class="empty-state">Menü henüz yayımlanmadı.</div>';
+    return;
+  }
+
+  const q = lower(query);
+  const items = (catalog.products || []).filter(p =>
+    p.active !== false &&
+    p.category === cat.id &&
+    (!q || lower(p.name).includes(q) || lower(p.description).includes(q))
+  );
+
+  let html =
+    '<div class="section-header">' +
+      '<h2>' + (cat.icon ? esc(cat.icon) + ' ' : '') + esc(cat.name) + '</h2>' +
+      '<span class="count-badge">' + items.length + ' Çeşit</span>' +
+    '</div>';
+
+  if (!items.length) {
+    html += '<div class="empty-state">' +
+      (q ? 'Aradığınız ürün bu kategoride bulunamadı.' : 'Bu kategoride şu an ürün bulunmuyor.') +
+      '</div>';
+    wrap.innerHTML = html;
+    return;
+  }
+
+  const compact = isBeverageCat(cat);
+  const fallback = '<div class="fallback-icon">' + (FALLBACK_SVGS[catKey(cat)] || FALLBACK_SVGS.default) + '</div>';
+
+  html += '<div class="item-grid' + (compact ? ' compact-grid' : '') + '">';
+
+  items.forEach(p => {
+    const thumb = p.image
+      ? '<img src="' + esc(imgUrl(p.image)) + '" alt="' + esc(p.name) + '" loading="lazy" ' +
+        'data-fb="' + esc(fallback) + '" onerror="this.parentElement.innerHTML=this.dataset.fb">'
+      : fallback;
+
+    if (compact) {
+      html +=
+        '<div class="compact-card">' +
+          '<div class="compact-thumb">' + thumb + '</div>' +
+          '<div class="compact-info">' +
+            '<div class="compact-header">' +
+              '<div><span class="compact-title">' + esc(p.name) + '</span></div>' +
+              '<div class="compact-price">' + money(p.price) + '<span class="currency">TL</span></div>' +
+            '</div>' +
+            (p.description ? '<div class="compact-desc">' + esc(p.description) + '</div>' : '') +
+          '</div>' +
+        '</div>';
+    } else {
+      html +=
+        '<div class="menu-card">' +
+          '<div class="card-thumb-wrap">' + thumb + '</div>' +
+          '<div class="card-details">' +
+            '<div class="card-title-row">' +
+              '<div class="card-title">' + esc(p.name) + '</div>' +
+              '<div class="card-price">' + money(p.price) + '<span class="currency">TL</span></div>' +
+            '</div>' +
+            (p.description ? '<div class="card-desc">' + esc(p.description) + '</div>' : '') +
+          '</div>' +
+        '</div>';
+    }
+  });
+
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+/* --- olaylar --- */
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value;
+  if (catalog) renderMenu();
+});
+
+// Sekme öne geldiğinde menüyü hemen tazele (masadaki telefon uzun süre açık kalabilir).
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') loadMenu();
+});
+
+loadMenu();
+setInterval(loadMenu, REFRESH_MS);
+</script>
+</body>
+</html>
