@@ -2,7 +2,7 @@ import json
 import re
 import hashlib
 import hmac
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.http import JsonResponse, FileResponse
@@ -95,7 +95,8 @@ def _apply_catalog_payload(payload, source='pos'):
             },
         )
 
-    for p in products:
+    seen_ids = set()
+    for index, p in enumerate(products):
         cat_obj = Category.objects.filter(category_id=str(p.get('category', ''))).first()
         if not cat_obj:
             continue
@@ -113,8 +114,15 @@ def _apply_catalog_payload(payload, source='pos'):
                 'active': bool(p.get('active', True)),
                 'description': str(p.get('description', ''))[:1000],
                 'image': str(p.get('image', ''))[:200],
+                # POS'un dizi sırası korunur; QR menü aynı sırayı gösterir.
+                'sort_order': index,
             },
         )
+        seen_ids.add(product_id)
+
+    # POS'ta silinmiş ürünler Django'da da kalmasın (katalog tam anlık görüntüdür).
+    if seen_ids:
+        Product.objects.exclude(product_id__in=seen_ids).delete()
 
     version = _safe_int(payload.get('version'))
     CatalogVersion.objects.update_or_create(
@@ -273,7 +281,6 @@ def sync_events(request):
                 'seq': seq,
                 'kind': kind,
                 'occurred_at': occurred,
-                'payload': ev.get('payload', {}),
             },
         )
         if created:
@@ -286,6 +293,11 @@ def sync_events(request):
 
     device.last_sync_at = timezone.now()
     device.save(update_fields=['last_sync_at'])
+
+    # Tekrar-gönderim kaydı 30 günden eskiyse gerekmez; tablo şişmesin.
+    SyncEvent.objects.filter(
+        received_at__lt=timezone.now() - timedelta(days=30)
+    ).delete()
 
     # Katalog güncelleme gerekiyor mu?
     client_version = _safe_int(data.get('catalogVersion'))

@@ -73,28 +73,47 @@ Eğer Django admin fiyat güncelledi ise:
 | GET | `/` veya `/menu/` | QR menü sayfası |
 | GET | `/admin/` | Django yönetim paneli |
 
+## Ürün Ekleme
+
+Admin → **Ürünler → Ürün Ekle**:
+
+- **Ürün kodu**: boş bırakın; kategorinin kısa kod düzeni sürdürülerek otomatik atanır
+  (kahvaltı → `k9`, kebap → `e31`, içecekler → `ic13`). Kaydedildikten sonra değişmez —
+  POS tarafında kalıcı anahtardır.
+- **Fiyat**: **TL** olarak girilir (`180,50`). Veritabanında kuruş tutulur, dönüşüm otomatiktir.
+- **Sıra**: POS ve QR menüde görünme sırası. Yeni ürün listenin sonuna eklenir.
+
 ## Ürün Görselleri
 
-POS (`aksu-sistem`) ürün görsellerini `images/urun1.jpg` biçiminde göreli yolla gönderir.
-Django bu dosyaları `static/images/` altından sunar — QR menü sayfası yolun başına
-otomatik olarak `/static/` ekler.
+Ürün formundaki **Görsel yükle** alanından bilgisayarınızdan dosya seçin. Dosya
+`static/images/` altına kaydedilir ve **Görsel yolu** alanı `images/dosya.jpg`
+biçiminde otomatik dolar. QR menü sayfası yolun başına `/static/` ekleyerek sunar.
 
-`aksu-sistem/web/images/` içindeki görseller `aksu-django/static/images/` klasörüne
-kopyalanmıştır. POS'a yeni bir görsel eklediğinizde buraya da kopyalayın:
+Yüklemeden sonra statik dosyaların yeniden derlenmesi gerekir:
 ```bash
-cp ../aksu-sistem/web/images/*.jpg static/images/
-docker compose up --build -d   # collectstatic yeniden çalışır
+docker compose restart web     # entrypoint collectstatic çalıştırır
 ```
-Ürün kaydındaki **Görsel yolu** alanına `images/urun1.jpg` formatında yazın
-(başına `/static/` **yazmayın** — POS tarafı bu biçimi kabul etmez).
+
+**POS ekranında da görünmesi için**: Windows POS ürün görsellerini kendi klasöründen
+(`aksu-sistem/web/images/`) okur. Django'ya yüklediğiniz dosyanın aynısını oraya da
+kopyalayın; aksi halde görsel yalnızca QR menüde görünür, POS'ta boş kalır.
+```bash
+cp static/images/yeni-urun.jpg ../aksu-sistem/web/images/
+```
+
+**Görsel yolu** alanını elle yazacaksanız `images/urun1.jpg` biçimini kullanın —
+başına `/static/` **yazmayın**, POS tarafı bu biçimi kabul etmez.
 
 ## POS ile Veri Sözleşmesi
 
 | Alan | Davranış |
 |------|----------|
 | Kategori `icon` | POS'tan gelen simge saklanır ve katalog yayımında geri gönderilir |
-| Kategori sırası | POS'un gönderdiği dizi sırası `Sıra` alanına yazılır |
+| Ürün sırası | POS'un dizi sırası `Sıra` alanına yazılır; QR menü ve POS **aynı sırayı** gösterir |
+| Ürün silme | Katalog tam anlık görüntüdür: bir tarafta silinen ürün diğerinden de kalkar |
+| Fiyat | Admin'de **TL**, veritabanı ve API'de kuruş |
 | Katalog sürümü | Yalnızca gelen sürüm mevcuttan büyükse uygulanır; aynı sürüm yeniden gönderilirse üzerine yazılır |
+| Senkronizasyon olayları | Yalnızca kimlik/sıra saklanır (tekrar gönderimleri elemek için), içerik saklanmaz ve 30 günden eski kayıtlar silinir |
 | Yedekler | Cihaz ilk `POST /api/sync` öncesinde yedek gönderebilir; cihaz otomatik kaydedilir |
 
 POS'un **Bulut & Yedek** paneli yalnızca `https://` adres kabul eder; yerel

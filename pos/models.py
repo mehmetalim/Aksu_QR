@@ -12,6 +12,40 @@ def pos_slug(value, fallback='urun'):
     return slugify(str(value).translate(TR_MAP))[:50].strip('-') or fallback
 
 
+def next_product_id(category):
+    """
+    Kategorinin mevcut kod düzenini sürdüren kısa bir ürün kodu üretir
+    (kahvaltı → k1, k2… / kebap → e1, e3… / içecekler → ic1, ic2…).
+    Kategoride hiç ürün yoksa kategori kodunun ilk harfi kullanılır.
+    """
+    import re
+    from django.db.models import Q
+
+    existing = list(
+        Product.objects.filter(category=category).values_list('product_id', flat=True)
+    )
+    prefixes = {}
+    for code in existing:
+        match = re.fullmatch(r'([a-zA-Z]+)(\d+)', code or '')
+        if match:
+            prefixes[match.group(1).lower()] = prefixes.get(match.group(1).lower(), 0) + 1
+    prefix = max(prefixes, key=prefixes.get) if prefixes else \
+        (pos_slug(category.category_id, 'u')[:2] or 'u')
+
+    used = set()
+    for code in Product.objects.filter(
+        Q(product_id__regex=r'^' + prefix + r'[0-9]+$')
+    ).values_list('product_id', flat=True):
+        match = re.fullmatch(prefix + r'(\d+)', code)
+        if match:
+            used.add(int(match.group(1)))
+
+    number = 1
+    while number in used:
+        number += 1
+    return f'{prefix}{number}'
+
+
 # POS (aksu-sistem) store.cjs saveProducts() ile birebir aynı kural.
 # Buna uymayan bir kimlik POS'ta "Ürün kimliği geçersiz." hatası verir.
 POS_ID_VALIDATOR = RegexValidator(
@@ -65,14 +99,19 @@ class Product(models.Model):
         Category, on_delete=models.PROTECT,
         verbose_name='Kategori', related_name='products'
     )
+    # Veritabanında kuruş tutulur (POS sözleşmesi); admin formu TL gösterir.
     price = models.IntegerField(verbose_name='Fiyat (kuruş)')
     active = models.BooleanField(default=True, verbose_name='Satışta')
     description = models.TextField(blank=True, verbose_name='Açıklama')
     image = models.CharField(max_length=200, blank=True, verbose_name='Görsel yolu')
+    # POS'un kendi ürün sırası; QR menü ve POS aynı sırayı göstersin diye korunur.
+    sort_order = models.IntegerField(default=0, verbose_name='Sıra')
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['category__display_order', 'name']
+        # POS'un dizi sırası birebir korunur — kategoriye göre gruplamak
+        # QR menüdeki sıralamayı POS'tan farklı kılıyordu.
+        ordering = ['sort_order', 'name']
         verbose_name = 'Ürün'
         verbose_name_plural = 'Ürünler'
 
@@ -121,7 +160,8 @@ class SyncEvent(models.Model):
     kind = models.CharField(max_length=30, choices=KINDS, verbose_name='Tür')
     occurred_at = models.DateTimeField(verbose_name='Oluşma Zamanı')
     received_at = models.DateTimeField(auto_now_add=True, verbose_name='Alınma Zamanı')
-    payload = models.JSONField(default=dict, verbose_name='İçerik')
+    # Olay içeriği saklanmaz — yalnızca tekrar gönderimleri elemek için kimlik tutulur.
+    # Veriler zaten Sipariş / Ödeme / Kasa / Vardiya tablolarına işleniyor.
 
     class Meta:
         unique_together = [('device', 'seq')]

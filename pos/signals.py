@@ -28,9 +28,8 @@ def publish_catalog(source='admin'):
                 'description': p.description,
                 'image': p.image,
             }
-            for p in Product.objects.select_related('category').order_by(
-                'category__display_order', 'name'
-            )
+            # POS'un gönderdiği sırayı koru — QR menü ile POS aynı sırayı gösterir.
+            for p in Product.objects.select_related('category').order_by('sort_order', 'name')
         ]
 
         snapshot = {
